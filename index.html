@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>同意書フォーム</title>
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #1a202c;
+      line-height: 1.6;
+      background: #fafafa;
+    }
+    h1 {
+      font-size: 1.4rem;
+      border-bottom: 3px solid #06c755;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+    .intro {
+      background: #f0fdf4;
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.92rem;
+      border-left: 4px solid #06c755;
+    }
+    .line-status {
+      display: flex;
+      align-items: center;
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .line-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 12px;
+      background: #e2e8f0;
+    }
+    label {
+      display: block;
+      margin: 18px 0 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .required { color: #e53e3e; }
+    input[type=text] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 16px;
+      background: white;
+    }
+    input:focus {
+      outline: none;
+      border-color: #06c755;
+      box-shadow: 0 0 0 3px rgba(6, 199, 85, 0.15);
+    }
+    .consent-box {
+      background: white;
+      border: 2px solid #06c755;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .consent-box input[type=checkbox] {
+      width: 22px;
+      height: 22px;
+      margin-top: 2px;
+      accent-color: #06c755;
+      flex-shrink: 0;
+    }
+    .consent-box label {
+      margin: 0;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary {
+      background: #06c755;
+      color: white;
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      font-size: 16px;
+    }
+    #status {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 6px;
+      display: none;
+      font-size: 0.95rem;
+    }
+    #status.success { background: #c6f6d5; color: #22543d; display: block; }
+    #status.error { background: #fed7d7; color: #742a2a; display: block; }
+    #status.info { background: #e2e8f0; color: #2d3748; display: block; }
+    .done-msg {
+      text-align: center;
+      padding: 40px 20px;
+      background: white;
+      border-radius: 8px;
+    }
+    .done-msg h2 { color: #22543d; margin-bottom: 12px; }
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #718096;
+    }
+    .auth-info {
+      font-size: 0.78rem;
+      color: #718096;
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: #f7fafc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div id="loadingScreen" class="loading">
+    <p>LINEに接続中…</p>
+  </div>
+
+  <div id="mainContent" style="display:none">
+    <h1 id="formLabel">テスト用同意書</h1>
+    <div class="intro" id="introText">これはテスト用の同意書フォームです。動作確認用にご利用ください。</div>
+
+    <div class="line-status" id="lineStatus">
+      <img class="line-avatar" id="lineAvatar" src="" alt="">
+      <div>
+        <div><strong id="lineName"></strong> 様</div>
+        <div style="color:#718096;font-size:0.82rem">LINEアカウントで認証済み</div>
+      </div>
+    </div>
+
+    <form id="consentForm" onsubmit="return false;">
+      <div id="parentFields">
+        <label>保護者氏名 <span class="required">*</span></label>
+        <input type="text" id="parentName" autocomplete="name">
+
+        <label>お子さまのお名前 <span class="required">*</span></label>
+        <input type="text" id="childName">
+      </div>
+
+      <div id="singleFields" style="display:none">
+        <label>氏名 <span class="required">*</span></label>
+        <input type="text" id="name" autocomplete="name">
+      </div>
+
+      <div class="consent-box">
+        <input type="checkbox" id="consentCheck">
+        <label for="consentCheck">
+          上記の説明事項を理解したうえで、本件にご同意いただける場合は、ここにチェックを入れてください。
+        </label>
+      </div>
+
+      <button type="button" class="btn-primary" id="submitBtn" onclick="submitFormHandler()">同意して送信</button>
+
+      <div class="auth-info">
+        本フォームはLINEログインによる本人認証を経て送信されます。<br>
+        提出後、PDF控えをLINEトークでお送りします。
+      </div>
+    </form>
+
+    <div id="status"></div>
+  </div>
+
+  <script>
+    // 設定
+    var LIFF_ID = "2010002887-EkRgCqeC";
+    var GAS_API_URL = "__GAS_API_URL__";  // ← 後で書き換える
+
+    // URLパラメータからフォームタイプを取得
+    var urlParams = new URLSearchParams(window.location.search);
+    var FORM_TYPE = urlParams.get("type") || "test";
+
+    // フォーム設定
+    var FORM_CONFIG = {
+      test: {
+        label: "テスト用同意書",
+        introText: "これはテスト用の同意書フォームです。動作確認用にご利用ください。",
+        requiresParent: true
+      }
+    };
+
+    var lineProfile = null;
+    var currentConfig = FORM_CONFIG[FORM_TYPE] || FORM_CONFIG.test;
+
+    async function initLiff() {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        lineProfile = await liff.getProfile();
+
+        // フォーム設定を反映
+        document.getElementById('formLabel').textContent = currentConfig.label;
+        document.getElementById('introText').textContent = currentConfig.introText;
+        document.title = currentConfig.label;
+
+        if (currentConfig.requiresParent) {
+          document.getElementById('parentFields').style.display = 'block';
+          document.getElementById('singleFields').style.display = 'none';
+        } else {
+          document.getElementById('parentFields').style.display = 'none';
+          document.getElementById('singleFields').style.display = 'block';
+        }
+
+        // LINE情報を反映
+        document.getElementById('lineName').textContent = lineProfile.displayName;
+        if (lineProfile.pictureUrl) {
+          document.getElementById('lineAvatar').src = lineProfile.pictureUrl;
+        }
+
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+      } catch (err) {
+        document.getElementById('loadingScreen').innerHTML =
+          '<p style="color:#e53e3e">LINE接続エラー: ' + err.message + '</p>' +
+          '<p>このページは LINE アプリ内で開いてください。</p>';
+      }
+    }
+
+    function showStatus(msg, kind) {
+      var s = document.getElementById('status');
+      s.textContent = msg;
+      s.className = kind || 'info';
+    }
+
+    function submitFormHandler() {
+      if (!lineProfile) {
+        showStatus('LINE情報を取得できていません。再読み込みしてください。', 'error');
+        return;
+      }
+
+      var data = {
+        formType: FORM_TYPE,
+        lineUserId: lineProfile.userId,
+        lineDisplayName: lineProfile.displayName
+      };
+
+      if (currentConfig.requiresParent) {
+        data.parentName = document.getElementById('parentName').value.trim();
+        data.childName = document.getElementById('childName').value.trim();
+        data.name = data.parentName;
+        if (!data.parentName || !data.childName) {
+          showStatus('保護者氏名とお子さまのお名前を入力してください', 'error');
+          return;
+        }
+      } else {
+        data.name = document.getElementById('name').value.trim();
+        if (!data.name) {
+          showStatus('氏名を入力してください', 'error');
+          return;
+        }
+      }
+
+      data.consentChecked = document.getElementById('consentCheck').checked;
+      if (!data.consentChecked) {
+        showStatus('同意のチェックボックスにチェックを入れてください', 'error');
+        return;
+      }
+
+      var btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      showStatus('送信中…しばらくお待ちください', 'info');
+
+      // GASへPOST
+      fetch(GAS_API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+      })
+      .then(function() {
+        // no-corsモードではレスポンスが読めないので、成功とみなす
+        document.getElementById('consentForm').style.display = 'none';
+        document.getElementById('lineStatus').style.display = 'none';
+        document.getElementById('status').style.display = 'none';
+        document.body.innerHTML += [
+          '<div class="done-msg">',
+          '  <h2>送信完了しました</h2>',
+          '  <p style="margin-top:12px;color:#4a5568">数秒後にLINEのトークに同意書のPDF控えが届きます。</p>',
+          '  <p style="margin-top:20px"><button onclick="liff.closeWindow()" class="btn-primary" style="max-width:200px">閉じる</button></p>',
+          '</div>'
+        ].join('');
+      })
+      .catch(function(err) {
+        showStatus('送信失敗: ' + err.message, 'error');
+        btn.disabled = false;
+      });
+    }
+
+    initLiff();
+  </script>
+</body>
+</html>
