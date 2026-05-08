@@ -37,6 +37,53 @@
     .intro-list li {
       margin-bottom: 4px;
     }
+    .doc-section {
+      background: #fff8e1;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .doc-section.confirmed {
+      background: #f0fdf4;
+      border-color: #06c755;
+    }
+    .doc-section h3 {
+      font-size: 1.0rem;
+      margin: 0 0 10px;
+      color: #92400e;
+    }
+    .doc-section.confirmed h3 {
+      color: #22543d;
+    }
+    .doc-section p {
+      font-size: 0.88rem;
+      margin: 0 0 12px;
+      color: #4a5568;
+    }
+    .btn-doc {
+      display: inline-block;
+      background: #f59e0b;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      width: 100%;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-doc:hover { opacity: 0.9; }
+    .doc-confirmed-msg {
+      display: none;
+      color: #22543d;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    .doc-section.confirmed .doc-confirmed-msg { display: block; }
     .line-status {
       display: flex;
       align-items: center;
@@ -53,6 +100,15 @@
       border-radius: 50%;
       margin-right: 12px;
       background: #e2e8f0;
+    }
+    .form-section {
+      opacity: 0.4;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .form-section.unlocked {
+      opacity: 1;
+      pointer-events: auto;
     }
     label {
       display: block;
@@ -229,7 +285,16 @@
       </div>
     </div>
 
-    <form id="consentForm" onsubmit="return false;">
+    <!-- 説明書セクション -->
+    <div class="doc-section" id="docSection">
+      <h3>📄 まずは「研究の説明書」をご確認ください</h3>
+      <p>下のボタンをタップすると説明書（別紙1）が新しいタブで開きます。お読みいただいた後，このページに戻って同意書フォームにご記入ください。</p>
+      <button type="button" class="btn-doc" id="docOpenBtn" onclick="onDocOpen()">📖 研究の説明書を開く</button>
+      <div class="doc-confirmed-msg">✅ 説明書を確認済み。下のフォームにお進みください。</div>
+    </div>
+
+    <!-- フォーム本体（説明書確認まではロック） -->
+    <form id="consentForm" class="form-section" onsubmit="return false;">
       <div id="parentFields">
         <label>保護者氏名 <span class="required">*</span></label>
         <input type="text" id="parentName" autocomplete="name">
@@ -264,13 +329,12 @@
   <script>
     var LIFF_ID = "2010002887-EkRgCqeC";
     var GAS_API_URL = "https://script.google.com/macros/s/AKfycbza_LIYSZrnqF9Pp1DABGs8dyHvGigfMlYlmx4lVuUSKKXfYjrILEPyl90qk_QONaf9ug/exec";
+    var DOC_URL = "https://docs.google.com/document/d/17iGB_NirzQ26btY1oBhgLyOXKxKYafIeSijhHpVkbtk/edit?usp=sharing";
 
-    // URLパラメータからフォームタイプを取得（デフォルトはmain＝本番）
     var urlParams = new URLSearchParams(window.location.search);
     var FORM_TYPE = urlParams.get("type") || "main";
 
-    // 共通の9項目intro文
-    var COMMON_INTRO_HTML = '事前にお渡しした説明書をお読みいただき，以下の9点についてご理解いただける場合は，フォームをご記入のうえご送信ください。' +
+    var COMMON_INTRO_HTML = '事前にお渡しした「ご協力のお願い」をお読みいただき、研究の概要をご確認のうえ、本フォーム内の説明書（別紙1）に必ずお目通しください。説明書をご確認後、以下の9点についてご理解いただける場合は、フォームをご記入のうえご送信ください。' +
       '<ol class="intro-list">' +
       '<li>研究の概要</li>' +
       '<li>研究参加者にもたらされる利益及び不利益</li>' +
@@ -298,6 +362,21 @@
 
     var lineProfile = null;
     var currentConfig = FORM_CONFIG[FORM_TYPE] || FORM_CONFIG.main;
+    var docConfirmed = false;
+    var docOpenedAt = null;
+
+    // 説明書ボタンが押されたとき
+    function onDocOpen() {
+      // 別タブで開く
+      window.open(DOC_URL, '_blank');
+      // 確認済みフラグを立てる
+      docConfirmed = true;
+      docOpenedAt = new Date().toISOString();
+      // UIを「確認済み」状態に変更
+      document.getElementById('docSection').classList.add('confirmed');
+      document.getElementById('docOpenBtn').textContent = '📖 説明書をもう一度開く';
+      document.getElementById('consentForm').classList.add('unlocked');
+    }
 
     function checkFriendship(userId) {
       return new Promise(function(resolve) {
@@ -388,10 +467,17 @@
         return;
       }
 
+      // 説明書確認チェック
+      if (!docConfirmed) {
+        showStatus('まず「研究の説明書を開く」ボタンをタップして説明書をご確認ください', 'error');
+        return;
+      }
+
       var data = {
         formType: FORM_TYPE,
         lineUserId: lineProfile.userId,
-        lineDisplayName: lineProfile.displayName
+        lineDisplayName: lineProfile.displayName,
+        docOpenedAt: docOpenedAt
       };
 
       if (currentConfig.requiresParent) {
@@ -428,6 +514,7 @@
       })
       .then(function() {
         document.getElementById('consentForm').style.display = 'none';
+        document.getElementById('docSection').style.display = 'none';
         document.getElementById('lineStatus').style.display = 'none';
         document.getElementById('status').style.display = 'none';
         document.body.innerHTML += [
