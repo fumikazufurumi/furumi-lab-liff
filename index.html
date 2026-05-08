@@ -30,6 +30,13 @@
       font-size: 0.92rem;
       border-left: 4px solid #06c755;
     }
+    .intro-list {
+      margin-top: 12px;
+      padding-left: 24px;
+    }
+    .intro-list li {
+      margin-bottom: 4px;
+    }
     .line-status {
       display: flex;
       align-items: center;
@@ -210,7 +217,9 @@
 
   <div id="mainContent" style="display:none">
     <h1 id="formLabel">同意書</h1>
-    <div class="intro" id="introText"></div>
+    <div class="intro" id="introBlock">
+      <div id="introText"></div>
+    </div>
 
     <div class="line-status" id="lineStatus">
       <img class="line-avatar" id="lineAvatar" src="" alt="">
@@ -237,7 +246,7 @@
       <div class="consent-box">
         <input type="checkbox" id="consentCheck">
         <label for="consentCheck">
-          上記の説明事項を理解したうえで、本件にご同意いただける場合は、ここにチェックを入れてください。
+          上記の9項目について理解したうえで、本件にご同意いただける場合は、ここにチェックを入れてください。
         </label>
       </div>
 
@@ -256,34 +265,39 @@
     var LIFF_ID = "2010002887-EkRgCqeC";
     var GAS_API_URL = "https://script.google.com/macros/s/AKfycbza_LIYSZrnqF9Pp1DABGs8dyHvGigfMlYlmx4lVuUSKKXfYjrILEPyl90qk_QONaf9ug/exec";
 
+    // URLパラメータからフォームタイプを取得（デフォルトはmain＝本番）
     var urlParams = new URLSearchParams(window.location.search);
-    var FORM_TYPE = urlParams.get("type") || "test";
+    var FORM_TYPE = urlParams.get("type") || "main";
+
+    // 共通の9項目intro文
+    var COMMON_INTRO_HTML = '事前にお渡しした説明書をお読みいただき，以下の9点についてご理解いただける場合は，フォームをご記入のうえご送信ください。' +
+      '<ol class="intro-list">' +
+      '<li>研究の概要</li>' +
+      '<li>研究参加者にもたらされる利益及び不利益</li>' +
+      '<li>研究協力の任意性と撤回の自由</li>' +
+      '<li>個人情報の保護</li>' +
+      '<li>研究終了後のデータの取扱方針</li>' +
+      '<li>研究結果のフィードバックと公表</li>' +
+      '<li>知的財産権</li>' +
+      '<li>研究実施時の配慮</li>' +
+      '<li>その他</li>' +
+      '</ol>';
 
     var FORM_CONFIG = {
       test: {
         label: "テスト用同意書",
-        introText: "これはテスト用の同意書フォームです。動作確認用にご利用ください。",
+        introHtml: "これはテスト用の同意書フォームです。動作確認用にご利用ください。<br><br>" + COMMON_INTRO_HTML,
         requiresParent: true
       },
-      en: {
-        label: "同意書（園での調査）",
-        introText: "事前にお渡しした「説明書」をお読みいただき，研究へのご参加にご同意いただける場合は，以下のフォームをご記入のうえご送信ください。",
-        requiresParent: true
-      },
-      gakudou: {
-        label: "同意書（学童での調査）",
-        introText: "事前にお渡しした「説明書」をお読みいただき，研究へのご参加にご同意いただける場合は，以下のフォームをご記入のうえご送信ください。",
-        requiresParent: true
-      },
-      raihou: {
-        label: "同意書（来訪調査）",
-        introText: "事前にお渡しした「説明書」をお読みいただき，研究へのご参加にご同意いただける場合は，以下のフォームをご記入のうえご送信ください。",
+      main: {
+        label: "同意書",
+        introHtml: COMMON_INTRO_HTML,
         requiresParent: true
       }
     };
 
     var lineProfile = null;
-    var currentConfig = FORM_CONFIG[FORM_TYPE] || FORM_CONFIG.test;
+    var currentConfig = FORM_CONFIG[FORM_TYPE] || FORM_CONFIG.main;
 
     function checkFriendship(userId) {
       return new Promise(function(resolve) {
@@ -337,7 +351,7 @@
         }
 
         document.getElementById('formLabel').textContent = currentConfig.label;
-        document.getElementById('introText').textContent = currentConfig.introText;
+        document.getElementById('introText').innerHTML = currentConfig.introHtml;
         document.title = currentConfig.label;
 
         if (currentConfig.requiresParent) {
