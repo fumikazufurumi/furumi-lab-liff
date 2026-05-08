@@ -209,8 +209,8 @@
   </div>
 
   <div id="mainContent" style="display:none">
-    <h1 id="formLabel">テスト用同意書</h1>
-    <div class="intro" id="introText">これはテスト用の同意書フォームです。動作確認用にご利用ください。</div>
+    <h1 id="formLabel">同意書</h1>
+    <div class="intro" id="introText"></div>
 
     <div class="line-status" id="lineStatus">
       <img class="line-avatar" id="lineAvatar" src="" alt="">
@@ -263,6 +263,21 @@
       test: {
         label: "テスト用同意書",
         introText: "これはテスト用の同意書フォームです。動作確認用にご利用ください。",
+        requiresParent: true
+      },
+      zoo: {
+        label: "同意書（園での調査）",
+        introText: "事前にお渡しした「説明書」をお読みいただき，研究へのご参加にご同意いただける場合は，以下のフォームをご記入のうえご送信ください。",
+        requiresParent: true
+      },
+      gakudou: {
+        label: "同意書（学童での調査）",
+        introText: "事前にお渡しした「説明書」をお読みいただき，研究へのご参加にご同意いただける場合は，以下のフォームをご記入のうえご送信ください。",
+        requiresParent: true
+      },
+      raihou: {
+        label: "同意書（来訪調査）",
+        introText: "事前にお渡しした「説明書」をお読みいただき，研究へのご参加にご同意いただける場合は，以下のフォームをご記入のうえご送信ください。",
         requiresParent: true
       }
     };
