@@ -106,6 +106,13 @@
       padding: 14px;
       font-size: 16px;
     }
+    .btn-primary.large-link {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      font-size: 17px;
+      padding: 16px;
+    }
     #status {
       margin-top: 16px;
       padding: 14px;
@@ -136,11 +143,69 @@
       background: #f7fafc;
       border-radius: 4px;
     }
+    .friend-required {
+      background: white;
+      border-radius: 8px;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .friend-required h2 {
+      font-size: 1.2rem;
+      color: #06c755;
+      margin-bottom: 16px;
+    }
+    .friend-required p {
+      font-size: 0.95rem;
+      color: #4a5568;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .friend-required .lab-name {
+      background: #f0fdf4;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .step-list {
+      text-align: left;
+      background: #f7fafc;
+      padding: 16px 20px 16px 36px;
+      border-radius: 6px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .step-list li {
+      margin-bottom: 8px;
+      color: #2d3748;
+    }
   </style>
 </head>
 <body>
   <div id="loadingScreen" class="loading">
     <p>LINEに接続中…</p>
+  </div>
+
+  <div id="friendRequiredScreen" style="display:none">
+    <div class="friend-required">
+      <h2>📌 ご利用前に友だち追加をお願いします</h2>
+      <div class="lab-name">関学子ども発達ラボ<br><span style="font-size:0.85rem;color:#4a5568;font-weight:normal">関西学院大学 文学部 子ども発達研究室</span></div>
+      <p>本同意書フォームをご利用いただくには，関学子ども発達ラボ（LINE公式アカウント）と「友だち」になっていただく必要があります。</p>
+      <p>同意書のPDF控えのお届けや，同意撤回時のご連絡は，LINEのトーク画面を通じて行わせていただきます。</p>
+
+      <ol class="step-list">
+        <li>下のボタンをタップして友だち追加</li>
+        <li>このページに戻って画面を再読み込み</li>
+        <li>同意書フォームをご利用いただけます</li>
+      </ol>
+
+      <a href="https://line.me/R/ti/p/@851zrfrb" class="btn-primary large-link">関学子ども発達ラボを友だち追加する</a>
+
+      <p style="margin-top:24px;font-size:0.82rem;color:#718096;text-align:center">
+        友だち追加後，ブラウザの再読み込みをすると<br>同意書フォームが表示されます。
+      </p>
+    </div>
   </div>
 
   <div id="mainContent" style="display:none">
@@ -151,7 +216,7 @@
       <img class="line-avatar" id="lineAvatar" src="" alt="">
       <div>
         <div><strong id="lineName"></strong> 様</div>
-        <div style="color:#718096;font-size:0.82rem">LINEアカウントで認証済み</div>
+        <div style="color:#718096;font-size:0.82rem">LINEアカウントで認証済み・関学子ども発達ラボと友だち</div>
       </div>
     </div>
 
@@ -179,7 +244,7 @@
       <button type="button" class="btn-primary" id="submitBtn" onclick="submitFormHandler()">同意して送信</button>
 
       <div class="auth-info">
-        本フォームはLINEログインによる本人認証を経て送信されます。<br>
+        本フォームはLINEログインによる本人認証および研究室公式LINEとの友だち関係を経て送信されます。<br>
         提出後、PDF控えをLINEトークでお送りします。
       </div>
     </form>
@@ -188,15 +253,12 @@
   </div>
 
   <script>
-    // 設定
     var LIFF_ID = "2010002887-EkRgCqeC";
-    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbza_LIYSZrnqF9Pp1DABGs8dyHvGigfMlYlmx4lVuUSKKXfYjrILEPyl90qk_QONaf9ug/exec";  // ← 後で書き換える
+    var GAS_API_URL = "https://script.google.com/macros/s/AKfycbza_LIYSZrnqF9Pp1DABGs8dyHvGigfMlYlmx4lVuUSKKXfYjrILEPyl90qk_QONaf9ug/exec";
 
-    // URLパラメータからフォームタイプを取得
     var urlParams = new URLSearchParams(window.location.search);
     var FORM_TYPE = urlParams.get("type") || "test";
 
-    // フォーム設定
     var FORM_CONFIG = {
       test: {
         label: "テスト用同意書",
@@ -207,6 +269,38 @@
 
     var lineProfile = null;
     var currentConfig = FORM_CONFIG[FORM_TYPE] || FORM_CONFIG.test;
+
+    function checkFriendship(userId) {
+      return new Promise(function(resolve) {
+        var callbackName = 'friendCheckCb_' + Date.now();
+        var timeoutId;
+
+        window[callbackName] = function(result) {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          var script = document.getElementById(callbackName);
+          if (script) script.remove();
+          resolve(result);
+        };
+
+        var script = document.createElement('script');
+        script.id = callbackName;
+        script.src = GAS_API_URL + '?action=checkFriend&userId=' + encodeURIComponent(userId) + '&callback=' + callbackName;
+        script.onerror = function() {
+          clearTimeout(timeoutId);
+          delete window[callbackName];
+          resolve({ isFriend: false, error: 'network error' });
+        };
+        document.head.appendChild(script);
+
+        timeoutId = setTimeout(function() {
+          delete window[callbackName];
+          var s = document.getElementById(callbackName);
+          if (s) s.remove();
+          resolve({ isFriend: false, error: 'timeout' });
+        }, 10000);
+      });
+    }
 
     async function initLiff() {
       try {
@@ -219,7 +313,14 @@
 
         lineProfile = await liff.getProfile();
 
-        // フォーム設定を反映
+        var friendResult = await checkFriendship(lineProfile.userId);
+
+        if (!friendResult.isFriend) {
+          document.getElementById('loadingScreen').style.display = 'none';
+          document.getElementById('friendRequiredScreen').style.display = 'block';
+          return;
+        }
+
         document.getElementById('formLabel').textContent = currentConfig.label;
         document.getElementById('introText').textContent = currentConfig.introText;
         document.title = currentConfig.label;
@@ -232,7 +333,6 @@
           document.getElementById('singleFields').style.display = 'block';
         }
 
-        // LINE情報を反映
         document.getElementById('lineName').textContent = lineProfile.displayName;
         if (lineProfile.pictureUrl) {
           document.getElementById('lineAvatar').src = lineProfile.pictureUrl;
@@ -291,7 +391,6 @@
       btn.disabled = true;
       showStatus('送信中…しばらくお待ちください', 'info');
 
-      // GASへPOST
       fetch(GAS_API_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -299,7 +398,6 @@
         body: JSON.stringify(data)
       })
       .then(function() {
-        // no-corsモードではレスポンスが読めないので、成功とみなす
         document.getElementById('consentForm').style.display = 'none';
         document.getElementById('lineStatus').style.display = 'none';
         document.getElementById('status').style.display = 'none';
