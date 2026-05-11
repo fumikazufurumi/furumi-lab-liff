@@ -32,13 +32,8 @@
     }
     .intro p { margin: 0 0 10px; }
     .intro p:last-child { margin-bottom: 0; }
-    .intro-list {
-      margin: 10px 0 0;
-      padding-left: 24px;
-    }
-    .intro-list li {
-      margin-bottom: 4px;
-    }
+    .intro-list { margin: 10px 0 0; padding-left: 24px; }
+    .intro-list li { margin-bottom: 4px; }
     .line-status {
       display: flex;
       align-items: center;
@@ -68,10 +63,7 @@
       padding: 14px 16px;
       margin-bottom: 12px;
     }
-    .doc-item.confirmed {
-      background: #f0fdf4;
-      border-color: #06c755;
-    }
+    .doc-item.confirmed { background: #f0fdf4; border-color: #06c755; }
     .doc-item .doc-title {
       font-weight: 600;
       font-size: 0.95rem;
@@ -98,9 +90,7 @@
       cursor: pointer;
       border: none;
     }
-    .doc-item.confirmed .btn-doc {
-      background: #38a169;
-    }
+    .doc-item.confirmed .btn-doc { background: #38a169; }
     .doc-item .doc-status {
       display: none;
       color: #22543d;
@@ -114,10 +104,7 @@
       pointer-events: none;
       transition: opacity 0.3s;
     }
-    .form-section.unlocked {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .form-section.unlocked { opacity: 1; pointer-events: auto; }
     label {
       display: block;
       margin: 18px 0 6px;
@@ -125,7 +112,7 @@
       font-size: 0.95rem;
     }
     .required { color: #e53e3e; }
-    input[type=text] {
+    input[type=text], input[type=date] {
       width: 100%;
       padding: 12px;
       border: 1px solid #cbd5e0;
@@ -155,11 +142,7 @@
       accent-color: #06c755;
       flex-shrink: 0;
     }
-    .consent-box label {
-      margin: 0;
-      font-weight: 500;
-      cursor: pointer;
-    }
+    .consent-box label { margin: 0; font-weight: 500; cursor: pointer; }
     .contact {
       background: #f7fafc;
       padding: 12px 14px;
@@ -230,11 +213,7 @@
       text-align: center;
       box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-    .friend-required h2 {
-      font-size: 1.2rem;
-      color: #06c755;
-      margin-bottom: 16px;
-    }
+    .friend-required h2 { font-size: 1.2rem; color: #06c755; margin-bottom: 16px; }
     .friend-required p {
       font-size: 0.95rem;
       color: #4a5568;
@@ -256,10 +235,7 @@
       margin: 16px 0;
       font-size: 0.9rem;
     }
-    .step-list li {
-      margin-bottom: 8px;
-      color: #2d3748;
-    }
+    .step-list li { margin-bottom: 8px; color: #2d3748; }
   </style>
 </head>
 <body>
@@ -287,25 +263,7 @@
   <div id="mainContent" style="display:none">
     <h1 id="formLabel">研究参加同意フォーム</h1>
 
-    <div class="intro">
-      <p>本研究プログラムへの参加をご検討いただきありがとうございます。</p>
-      <p>本フォームでは、関西学院大学 文学部 古見研究室が実施する一連の研究への参加同意を電子的に取得します。</p>
-      <p>フォーム送信前に、下記の<strong>2つの資料</strong>を必ずご確認ください。</p>
-      <p>各資料をご確認いただき、本研究プログラムへの参加にご同意いただける場合のみ、本フォームをご記入・送信ください。</p>
-      <p>本フォームの送信により、上記資料に記載された以下の事項について説明を受け、内容を確認した上で、研究参加に同意したものとみなします。</p>
-      <ol class="intro-list">
-        <li>研究の概要</li>
-        <li>研究参加によって想定される利益および不利益</li>
-        <li>研究協力の任意性および同意撤回について</li>
-        <li>個人情報の保護および管理方法</li>
-        <li>研究終了後のデータの取扱い方針</li>
-        <li>研究結果のフィードバックおよび公表方法</li>
-        <li>知的財産権の取扱い</li>
-        <li>研究実施時の配慮事項</li>
-        <li>その他、研究参加に関する事項</li>
-      </ol>
-      <p>なお、研究への参加は完全に任意です。同意後であっても、いつでも不利益なく撤回することができます。撤回をご希望の場合は、研究室公式LINEのトークまたは下記連絡先までご連絡ください。</p>
-    </div>
+    <div class="intro" id="introBlock"></div>
 
     <div class="line-status" id="lineStatus">
       <img class="line-avatar" id="lineAvatar" src="" alt="">
@@ -315,45 +273,20 @@
       </div>
     </div>
 
-    <!-- 説明資料セクション -->
-    <div class="docs-block">
-      <h3>📄 まずは、以下の2つの資料を必ずご確認ください</h3>
+    <div class="docs-block" id="docsBlock"></div>
 
-      <div class="doc-item" id="doc1">
-        <div class="doc-title">① 研究全体に関する説明書（包括説明）</div>
-        <div class="doc-desc">本研究プログラム全体の目的・方法・データの扱いなどをご説明する資料です。</div>
-        <button type="button" class="btn-doc" onclick="onDocOpen(1)">📖 包括説明書を開く</button>
-        <div class="doc-status">✅ 確認済み</div>
-      </div>
+    <div class="contact" id="contactBlock"></div>
 
-      <div class="doc-item" id="doc2">
-        <div class="doc-title">② 今年度実施予定の各研究の説明資料</div>
-        <div class="doc-desc">令和8年度に実施予定の個別研究の内容（タイトル・対象・実施時期など）をまとめた資料です。</div>
-        <button type="button" class="btn-doc" onclick="onDocOpen(2)">📖 今年度の研究資料を開く</button>
-        <div class="doc-status">✅ 確認済み</div>
-      </div>
-    </div>
-
-    <div class="contact">
-      <strong>【お問い合わせ・撤回連絡先】</strong><br>
-      関西学院大学 文学部 古見研究室<br>
-      准教授 古見 文一<br>
-      Email: fumikazu.furumi@kwansei.ac.jp
-    </div>
-
-    <!-- フォーム本体 -->
     <form id="consentForm" class="form-section" onsubmit="return false;">
-      <div id="parentFields">
-        <label>保護者氏名 <span class="required">*</span></label>
-        <input type="text" id="parentName" autocomplete="name">
+      <label>保護者氏名 <span class="required">*</span></label>
+      <input type="text" id="parentName" autocomplete="name">
 
-        <label>お子さまのお名前 <span class="required">*</span></label>
-        <input type="text" id="childName">
-      </div>
+      <label>お子さまのお名前 <span class="required">*</span></label>
+      <input type="text" id="childName">
 
-      <div id="singleFields" style="display:none">
-        <label>氏名 <span class="required">*</span></label>
-        <input type="text" id="name" autocomplete="name">
+      <div id="birthdateField" style="display:none">
+        <label>お子さまの生年月日 <span class="required">*</span></label>
+        <input type="date" id="childBirthdate">
       </div>
 
       <div class="consent-box">
@@ -377,27 +310,80 @@
   <script>
     var LIFF_ID = "2010002887-EkRgCqeC";
     var GAS_API_URL = "https://script.google.com/macros/s/AKfycbza_LIYSZrnqF9Pp1DABGs8dyHvGigfMlYlmx4lVuUSKKXfYjrILEPyl90qk_QONaf9ug/exec";
-    
-    var DOC_URLS = {
-      1: "https://docs.google.com/document/d/17iGB_NirzQ26btY1oBhgLyOXKxKYafIeSijhHpVkbtk/edit?usp=sharing",
-      2: "https://docs.google.com/document/d/1pC5pOr8q9qkIrIS87i-IrB6xym-nkK9mGB0MQhR6Ov0/edit?usp=sharing"
-    };
 
     var urlParams = new URLSearchParams(window.location.search);
+    var PROJECT = urlParams.get("project") || "furumi";
     var FORM_TYPE = urlParams.get("type") || "main";
 
-    var FORM_CONFIG = {
-      test: { label: "研究参加同意フォーム（テスト）", requiresParent: true },
-      main: { label: "研究参加同意フォーム", requiresParent: true }
+    var PROJECT_CONFIG = {
+      furumi: {
+        title: "研究参加同意フォーム",
+        intro: '<p>本研究プログラムへの参加をご検討いただきありがとうございます。</p>' +
+          '<p>本フォームでは、関西学院大学 文学部 古見研究室が実施する一連の研究への参加同意を電子的に取得します。</p>' +
+          '<p>フォーム送信前に、下記の<strong>2つの資料</strong>を必ずご確認ください。</p>' +
+          '<p>各資料をご確認いただき、本研究プログラムへの参加にご同意いただける場合のみ、本フォームをご記入・送信ください。</p>' +
+          '<p>本フォームの送信により、上記資料に記載された以下の事項について説明を受け、内容を確認した上で、研究参加に同意したものとみなします。</p>' +
+          '<ol class="intro-list">' +
+          '<li>研究の概要</li>' +
+          '<li>研究参加によって想定される利益および不利益</li>' +
+          '<li>研究協力の任意性および同意撤回について</li>' +
+          '<li>個人情報の保護および管理方法</li>' +
+          '<li>研究終了後のデータの取扱い方針</li>' +
+          '<li>研究結果のフィードバックおよび公表方法</li>' +
+          '<li>知的財産権の取扱い</li>' +
+          '<li>研究実施時の配慮事項</li>' +
+          '<li>その他、研究参加に関する事項</li>' +
+          '</ol>' +
+          '<p>なお、研究への参加は完全に任意です。同意後であっても、いつでも不利益なく撤回することができます。撤回をご希望の場合は、研究室公式LINEのトークまたは下記連絡先までご連絡ください。</p>',
+        docs: [
+          { num: 1, title: '① 研究全体に関する説明書（包括説明）', desc: '本研究プログラム全体の目的・方法・データの扱いなどをご説明する資料です。', url: 'https://docs.google.com/document/d/17iGB_NirzQ26btY1oBhgLyOXKxKYafIeSijhHpVkbtk/edit?usp=sharing', btnText: '📖 包括説明書を開く' },
+          { num: 2, title: '② 今年度実施予定の各研究の説明資料', desc: '令和8年度に実施予定の個別研究の内容（タイトル・対象・実施時期など）をまとめた資料です。', url: 'https://docs.google.com/document/d/1pC5pOr8q9qkIrIS87i-IrB6xym-nkK9mGB0MQhR6Ov0/edit?usp=sharing', btnText: '📖 今年度の研究資料を開く' }
+        ],
+        contact: '<strong>【お問い合わせ・撤回連絡先】</strong><br>関西学院大学 文学部 古見研究室<br>准教授 古見 文一<br>Email: fumikazu.furumi@kwansei.ac.jp',
+        requiresBirthdate: false
+      },
+      tec: {
+        title: "研究参加同意フォーム（TEC：感情理解の発達研究）",
+        intro: '<p>研究プロジェクト「養育者による感情の社会化と幼児・児童の感情理解の発達」（文部科学省科学研究費助成事業 基盤研究(C) 2024〜2027年度）への参加をご検討いただきありがとうございます。</p>' +
+          '<p>本研究は、名古屋大学大学院教育発達科学研究科の溝川 藍 准教授を研究責任者とし、関西学院大学文学部の古見 文一 准教授との共同研究として実施しています。</p>' +
+          '<p>フォーム送信前に、下記の説明書を必ずご確認ください。</p>' +
+          '<p>説明書をご確認いただき、本研究への参加にご同意いただける場合のみ、本フォームをご記入・送信ください。</p>' +
+          '<p>本フォームの送信により、説明書に記載された以下の事項について説明を受け、内容を確認した上で、研究参加に同意したものとみなします。</p>' +
+          '<ol class="intro-list">' +
+          '<li>研究の概要</li>' +
+          '<li>研究参加によって想定される利益および不利益</li>' +
+          '<li>研究協力の任意性および同意撤回について</li>' +
+          '<li>個人情報の保護および管理方法</li>' +
+          '<li>研究終了後のデータの取扱い方針</li>' +
+          '<li>研究結果のフィードバックおよび公表方法</li>' +
+          '<li>知的財産権の取扱い</li>' +
+          '<li>研究実施時の配慮事項</li>' +
+          '<li>その他、研究参加に関する事項</li>' +
+          '</ol>' +
+          '<p>なお、研究への参加は完全に任意です。同意後であっても、いつでも不利益なく撤回することができます。撤回をご希望の場合は、研究室公式LINEのトークまたは下記連絡先までご連絡ください。</p>',
+        docs: [
+          { num: 1, title: '① 研究説明書', desc: '本研究の目的・方法・データの扱いなどをご説明する資料です。', url: 'https://docs.google.com/document/d/1v7WANZTWEGvzgyi81yOvsuP8lMRcPRCPo8V8TiKULO8/edit?usp=sharing', btnText: '📖 研究説明書を開く' }
+        ],
+        contact: '<strong>【お問い合わせ・撤回連絡先】</strong><br>' +
+          '<strong>研究責任者：</strong>溝川 藍（名古屋大学大学院教育発達科学研究科 准教授）<br>' +
+          'Email: mizokawa.ai.u0@f.mail.nagoya-u.ac.jp<br><br>' +
+          '<strong>共同研究者：</strong>古見 文一（関西学院大学 文学部 准教授）<br>' +
+          'Email: fumikazu.furumi@kwansei.ac.jp',
+        requiresBirthdate: true
+      }
     };
 
+    var currentProject = PROJECT_CONFIG[PROJECT] || PROJECT_CONFIG.furumi;
+
     var lineProfile = null;
-    var currentConfig = FORM_CONFIG[FORM_TYPE] || FORM_CONFIG.main;
-    var docsOpened = { 1: false, 2: false };
-    var docsOpenedAt = { 1: null, 2: null };
+    var docsOpened = {};
+    var docsOpenedAt = {};
 
     function onDocOpen(docNum) {
-      window.open(DOC_URLS[docNum], '_blank');
+      var docs = currentProject.docs;
+      var doc = docs.find(function(d) { return d.num === docNum; });
+      if (!doc) return;
+      window.open(doc.url, '_blank');
       docsOpened[docNum] = true;
       docsOpenedAt[docNum] = new Date().toISOString();
       document.getElementById('doc' + docNum).classList.add('confirmed');
@@ -405,7 +391,8 @@
     }
 
     function checkAllDocsOpened() {
-      if (docsOpened[1] && docsOpened[2]) {
+      var allOpened = currentProject.docs.every(function(d) { return docsOpened[d.num]; });
+      if (allOpened) {
         document.getElementById('consentForm').classList.add('unlocked');
       }
     }
@@ -414,7 +401,6 @@
       return new Promise(function(resolve) {
         var callbackName = 'friendCheckCb_' + Date.now();
         var timeoutId;
-
         window[callbackName] = function(result) {
           clearTimeout(timeoutId);
           delete window[callbackName];
@@ -422,7 +408,6 @@
           if (script) script.remove();
           resolve(result);
         };
-
         var script = document.createElement('script');
         script.id = callbackName;
         script.src = GAS_API_URL + '?action=checkFriend&userId=' + encodeURIComponent(userId) + '&callback=' + callbackName;
@@ -432,7 +417,6 @@
           resolve({ isFriend: false, error: 'network error' });
         };
         document.head.appendChild(script);
-
         timeoutId = setTimeout(function() {
           delete window[callbackName];
           var s = document.getElementById(callbackName);
@@ -442,41 +426,48 @@
       });
     }
 
+    function renderDocs() {
+      var html = '<h3>📄 まずは、以下の' + (currentProject.docs.length === 1 ? '資料' : currentProject.docs.length + 'つの資料') + 'を必ずご確認ください</h3>';
+      currentProject.docs.forEach(function(doc) {
+        html += '<div class="doc-item" id="doc' + doc.num + '">' +
+          '<div class="doc-title">' + doc.title + '</div>' +
+          '<div class="doc-desc">' + doc.desc + '</div>' +
+          '<button type="button" class="btn-doc" onclick="onDocOpen(' + doc.num + ')">' + doc.btnText + '</button>' +
+          '<div class="doc-status">✅ 確認済み</div>' +
+          '</div>';
+      });
+      document.getElementById('docsBlock').innerHTML = html;
+    }
+
     async function initLiff() {
       try {
         await liff.init({ liffId: LIFF_ID });
-
         if (!liff.isLoggedIn()) {
           liff.login();
           return;
         }
-
         lineProfile = await liff.getProfile();
-
         var friendResult = await checkFriendship(lineProfile.userId);
-
         if (!friendResult.isFriend) {
           document.getElementById('loadingScreen').style.display = 'none';
           document.getElementById('friendRequiredScreen').style.display = 'block';
           return;
         }
 
-        document.getElementById('formLabel').textContent = currentConfig.label;
-        document.title = currentConfig.label;
+        document.getElementById('formLabel').textContent = currentProject.title;
+        document.getElementById('introBlock').innerHTML = currentProject.intro;
+        document.getElementById('contactBlock').innerHTML = currentProject.contact;
+        document.title = currentProject.title;
+        renderDocs();
 
-        if (currentConfig.requiresParent) {
-          document.getElementById('parentFields').style.display = 'block';
-          document.getElementById('singleFields').style.display = 'none';
-        } else {
-          document.getElementById('parentFields').style.display = 'none';
-          document.getElementById('singleFields').style.display = 'block';
+        if (currentProject.requiresBirthdate) {
+          document.getElementById('birthdateField').style.display = 'block';
         }
 
         document.getElementById('lineName').textContent = lineProfile.displayName;
         if (lineProfile.pictureUrl) {
           document.getElementById('lineAvatar').src = lineProfile.pictureUrl;
         }
-
         document.getElementById('loadingScreen').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
       } catch (err) {
@@ -497,32 +488,34 @@
         showStatus('LINE情報を取得できていません。再読み込みしてください。', 'error');
         return;
       }
-
-      if (!docsOpened[1] || !docsOpened[2]) {
-        showStatus('まず2つの資料（包括説明書・今年度の研究資料）をご確認ください', 'error');
+      var allOpened = currentProject.docs.every(function(d) { return docsOpened[d.num]; });
+      if (!allOpened) {
+        showStatus('まず資料をご確認ください', 'error');
         return;
       }
 
       var data = {
+        project: PROJECT,
         formType: FORM_TYPE,
         lineUserId: lineProfile.userId,
         lineDisplayName: lineProfile.displayName,
-        doc1OpenedAt: docsOpenedAt[1],
-        doc2OpenedAt: docsOpenedAt[2]
+        parentName: document.getElementById('parentName').value.trim(),
+        childName: document.getElementById('childName').value.trim()
       };
 
-      if (currentConfig.requiresParent) {
-        data.parentName = document.getElementById('parentName').value.trim();
-        data.childName = document.getElementById('childName').value.trim();
-        data.name = data.parentName;
-        if (!data.parentName || !data.childName) {
-          showStatus('保護者氏名とお子さまのお名前を入力してください', 'error');
-          return;
-        }
-      } else {
-        data.name = document.getElementById('name').value.trim();
-        if (!data.name) {
-          showStatus('氏名を入力してください', 'error');
+      Object.keys(docsOpenedAt).forEach(function(k) {
+        data['doc' + k + 'OpenedAt'] = docsOpenedAt[k];
+      });
+
+      if (!data.parentName || !data.childName) {
+        showStatus('保護者氏名とお子さまのお名前を入力してください', 'error');
+        return;
+      }
+
+      if (currentProject.requiresBirthdate) {
+        data.childBirthdate = document.getElementById('childBirthdate').value;
+        if (!data.childBirthdate) {
+          showStatus('お子さまの生年月日を入力してください', 'error');
           return;
         }
       }
