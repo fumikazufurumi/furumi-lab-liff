@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>同意書フォーム</title>
+  <title>研究参加同意フォーム</title>
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     * { box-sizing: border-box; }
@@ -13,7 +13,7 @@
       margin: 0 auto;
       padding: 20px;
       color: #1a202c;
-      line-height: 1.6;
+      line-height: 1.7;
       background: #fafafa;
     }
     h1 {
@@ -24,66 +24,21 @@
     }
     .intro {
       background: #f0fdf4;
-      padding: 14px 16px;
+      padding: 16px;
       border-radius: 8px;
       margin-bottom: 20px;
       font-size: 0.92rem;
       border-left: 4px solid #06c755;
     }
+    .intro p { margin: 0 0 10px; }
+    .intro p:last-child { margin-bottom: 0; }
     .intro-list {
-      margin-top: 12px;
+      margin: 10px 0 0;
       padding-left: 24px;
     }
     .intro-list li {
       margin-bottom: 4px;
     }
-    .doc-section {
-      background: #fff8e1;
-      border: 2px solid #f59e0b;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-    .doc-section.confirmed {
-      background: #f0fdf4;
-      border-color: #06c755;
-    }
-    .doc-section h3 {
-      font-size: 1.0rem;
-      margin: 0 0 10px;
-      color: #92400e;
-    }
-    .doc-section.confirmed h3 {
-      color: #22543d;
-    }
-    .doc-section p {
-      font-size: 0.88rem;
-      margin: 0 0 12px;
-      color: #4a5568;
-    }
-    .btn-doc {
-      display: inline-block;
-      background: #f59e0b;
-      color: white;
-      padding: 12px 18px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 14px;
-      width: 100%;
-      text-align: center;
-      cursor: pointer;
-      border: none;
-    }
-    .btn-doc:hover { opacity: 0.9; }
-    .doc-confirmed-msg {
-      display: none;
-      color: #22543d;
-      font-size: 0.85rem;
-      margin-top: 10px;
-      font-weight: 600;
-    }
-    .doc-section.confirmed .doc-confirmed-msg { display: block; }
     .line-status {
       display: flex;
       align-items: center;
@@ -101,6 +56,59 @@
       margin-right: 12px;
       background: #e2e8f0;
     }
+    .docs-block h3 {
+      font-size: 0.95rem;
+      margin: 0 0 12px;
+      color: #4a5568;
+    }
+    .doc-item {
+      background: #fff8e1;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .doc-item.confirmed {
+      background: #f0fdf4;
+      border-color: #06c755;
+    }
+    .doc-item .doc-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      color: #92400e;
+    }
+    .doc-item.confirmed .doc-title { color: #22543d; }
+    .doc-item .doc-desc {
+      font-size: 0.82rem;
+      color: #4a5568;
+      margin-bottom: 10px;
+    }
+    .btn-doc {
+      display: block;
+      background: #f59e0b;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      width: 100%;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+    }
+    .doc-item.confirmed .btn-doc {
+      background: #38a169;
+    }
+    .doc-item .doc-status {
+      display: none;
+      color: #22543d;
+      font-size: 0.82rem;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    .doc-item.confirmed .doc-status { display: block; }
     .form-section {
       opacity: 0.4;
       pointer-events: none;
@@ -152,6 +160,15 @@
       font-weight: 500;
       cursor: pointer;
     }
+    .contact {
+      background: #f7fafc;
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin: 14px 0;
+      font-size: 0.85rem;
+      color: #4a5568;
+    }
+    .contact strong { color: #1a202c; }
     button {
       padding: 12px 20px;
       border: none;
@@ -264,17 +281,30 @@
       </ol>
 
       <a href="https://line.me/R/ti/p/@851zrfrb" class="btn-primary large-link">関学子ども発達ラボを友だち追加する</a>
-
-      <p style="margin-top:24px;font-size:0.82rem;color:#718096;text-align:center">
-        友だち追加後，ブラウザの再読み込みをすると<br>同意書フォームが表示されます。
-      </p>
     </div>
   </div>
 
   <div id="mainContent" style="display:none">
-    <h1 id="formLabel">同意書</h1>
-    <div class="intro" id="introBlock">
-      <div id="introText"></div>
+    <h1 id="formLabel">研究参加同意フォーム</h1>
+
+    <div class="intro">
+      <p>本研究プログラムへの参加をご検討いただきありがとうございます。</p>
+      <p>本フォームでは、関西学院大学 文学部 古見研究室が実施する一連の研究への参加同意を電子的に取得します。</p>
+      <p>フォーム送信前に、下記の<strong>2つの資料</strong>を必ずご確認ください。</p>
+      <p>各資料をご確認いただき、本研究プログラムへの参加にご同意いただける場合のみ、本フォームをご記入・送信ください。</p>
+      <p>本フォームの送信により、上記資料に記載された以下の事項について説明を受け、内容を確認した上で、研究参加に同意したものとみなします。</p>
+      <ol class="intro-list">
+        <li>研究の概要</li>
+        <li>研究参加によって想定される利益および不利益</li>
+        <li>研究協力の任意性および同意撤回について</li>
+        <li>個人情報の保護および管理方法</li>
+        <li>研究終了後のデータの取扱い方針</li>
+        <li>研究結果のフィードバックおよび公表方法</li>
+        <li>知的財産権の取扱い</li>
+        <li>研究実施時の配慮事項</li>
+        <li>その他、研究参加に関する事項</li>
+      </ol>
+      <p>なお、研究への参加は完全に任意です。同意後であっても、いつでも不利益なく撤回することができます。撤回をご希望の場合は、研究室公式LINEのトークまたは下記連絡先までご連絡ください。</p>
     </div>
 
     <div class="line-status" id="lineStatus">
@@ -285,15 +315,33 @@
       </div>
     </div>
 
-    <!-- 説明書セクション -->
-    <div class="doc-section" id="docSection">
-      <h3>📄 まずは「研究の説明書」をご確認ください</h3>
-      <p>下のボタンをタップすると説明書（別紙1）が新しいタブで開きます。お読みいただいた後，このページに戻って同意書フォームにご記入ください。</p>
-      <button type="button" class="btn-doc" id="docOpenBtn" onclick="onDocOpen()">📖 研究の説明書を開く</button>
-      <div class="doc-confirmed-msg">✅ 説明書を確認済み。下のフォームにお進みください。</div>
+    <!-- 説明資料セクション -->
+    <div class="docs-block">
+      <h3>📄 まずは、以下の2つの資料を必ずご確認ください</h3>
+
+      <div class="doc-item" id="doc1">
+        <div class="doc-title">① 研究全体に関する説明書（包括説明）</div>
+        <div class="doc-desc">本研究プログラム全体の目的・方法・データの扱いなどをご説明する資料です。</div>
+        <button type="button" class="btn-doc" onclick="onDocOpen(1)">📖 包括説明書を開く</button>
+        <div class="doc-status">✅ 確認済み</div>
+      </div>
+
+      <div class="doc-item" id="doc2">
+        <div class="doc-title">② 今年度実施予定の各研究の説明資料</div>
+        <div class="doc-desc">令和8年度に実施予定の個別研究の内容（タイトル・対象・実施時期など）をまとめた資料です。</div>
+        <button type="button" class="btn-doc" onclick="onDocOpen(2)">📖 今年度の研究資料を開く</button>
+        <div class="doc-status">✅ 確認済み</div>
+      </div>
     </div>
 
-    <!-- フォーム本体（説明書確認まではロック） -->
+    <div class="contact">
+      <strong>【お問い合わせ・撤回連絡先】</strong><br>
+      関西学院大学 文学部 古見研究室<br>
+      准教授 古見 文一<br>
+      Email: fumikazu.furumi@kwansei.ac.jp
+    </div>
+
+    <!-- フォーム本体 -->
     <form id="consentForm" class="form-section" onsubmit="return false;">
       <div id="parentFields">
         <label>保護者氏名 <span class="required">*</span></label>
@@ -311,11 +359,11 @@
       <div class="consent-box">
         <input type="checkbox" id="consentCheck">
         <label for="consentCheck">
-          上記の9項目について理解したうえで、本件にご同意いただける場合は、ここにチェックを入れてください。
+          上記の内容について説明を受け、内容を確認した上で、本研究プログラムへの参加に同意します。
         </label>
       </div>
 
-      <button type="button" class="btn-primary" id="submitBtn" onclick="submitFormHandler()">同意して送信</button>
+      <button type="button" class="btn-primary" id="submitBtn" onclick="submitFormHandler()">同意して送信する</button>
 
       <div class="auth-info">
         本フォームはLINEログインによる本人認証および研究室公式LINEとの友だち関係を経て送信されます。<br>
@@ -329,53 +377,37 @@
   <script>
     var LIFF_ID = "2010002887-EkRgCqeC";
     var GAS_API_URL = "https://script.google.com/macros/s/AKfycbza_LIYSZrnqF9Pp1DABGs8dyHvGigfMlYlmx4lVuUSKKXfYjrILEPyl90qk_QONaf9ug/exec";
-    var DOC_URL = "https://docs.google.com/document/d/17iGB_NirzQ26btY1oBhgLyOXKxKYafIeSijhHpVkbtk/edit?usp=sharing";
+    
+    var DOC_URLS = {
+      1: "https://docs.google.com/document/d/17iGB_NirzQ26btY1oBhgLyOXKxKYafIeSijhHpVkbtk/edit?usp=sharing",
+      2: "https://docs.google.com/document/d/1pC5pOr8q9qkIrIS87i-IrB6xym-nkK9mGB0MQhR6Ov0/edit?usp=sharing"
+    };
 
     var urlParams = new URLSearchParams(window.location.search);
     var FORM_TYPE = urlParams.get("type") || "main";
 
-    var COMMON_INTRO_HTML = '事前にお渡しした「ご協力のお願い」をお読みいただき、研究の概要をご確認のうえ、本フォーム内の説明書（別紙1）に必ずお目通しください。説明書をご確認後、以下の9点についてご理解いただける場合は、フォームをご記入のうえご送信ください。' +
-      '<ol class="intro-list">' +
-      '<li>研究の概要</li>' +
-      '<li>研究参加者にもたらされる利益及び不利益</li>' +
-      '<li>研究協力の任意性と撤回の自由</li>' +
-      '<li>個人情報の保護</li>' +
-      '<li>研究終了後のデータの取扱方針</li>' +
-      '<li>研究結果のフィードバックと公表</li>' +
-      '<li>知的財産権</li>' +
-      '<li>研究実施時の配慮</li>' +
-      '<li>その他</li>' +
-      '</ol>';
-
     var FORM_CONFIG = {
-      test: {
-        label: "テスト用同意書",
-        introHtml: "これはテスト用の同意書フォームです。動作確認用にご利用ください。<br><br>" + COMMON_INTRO_HTML,
-        requiresParent: true
-      },
-      main: {
-        label: "同意書",
-        introHtml: COMMON_INTRO_HTML,
-        requiresParent: true
-      }
+      test: { label: "研究参加同意フォーム（テスト）", requiresParent: true },
+      main: { label: "研究参加同意フォーム", requiresParent: true }
     };
 
     var lineProfile = null;
     var currentConfig = FORM_CONFIG[FORM_TYPE] || FORM_CONFIG.main;
-    var docConfirmed = false;
-    var docOpenedAt = null;
+    var docsOpened = { 1: false, 2: false };
+    var docsOpenedAt = { 1: null, 2: null };
 
-    // 説明書ボタンが押されたとき
-    function onDocOpen() {
-      // 別タブで開く
-      window.open(DOC_URL, '_blank');
-      // 確認済みフラグを立てる
-      docConfirmed = true;
-      docOpenedAt = new Date().toISOString();
-      // UIを「確認済み」状態に変更
-      document.getElementById('docSection').classList.add('confirmed');
-      document.getElementById('docOpenBtn').textContent = '📖 説明書をもう一度開く';
-      document.getElementById('consentForm').classList.add('unlocked');
+    function onDocOpen(docNum) {
+      window.open(DOC_URLS[docNum], '_blank');
+      docsOpened[docNum] = true;
+      docsOpenedAt[docNum] = new Date().toISOString();
+      document.getElementById('doc' + docNum).classList.add('confirmed');
+      checkAllDocsOpened();
+    }
+
+    function checkAllDocsOpened() {
+      if (docsOpened[1] && docsOpened[2]) {
+        document.getElementById('consentForm').classList.add('unlocked');
+      }
     }
 
     function checkFriendship(userId) {
@@ -430,7 +462,6 @@
         }
 
         document.getElementById('formLabel').textContent = currentConfig.label;
-        document.getElementById('introText').innerHTML = currentConfig.introHtml;
         document.title = currentConfig.label;
 
         if (currentConfig.requiresParent) {
@@ -467,9 +498,8 @@
         return;
       }
 
-      // 説明書確認チェック
-      if (!docConfirmed) {
-        showStatus('まず「研究の説明書を開く」ボタンをタップして説明書をご確認ください', 'error');
+      if (!docsOpened[1] || !docsOpened[2]) {
+        showStatus('まず2つの資料（包括説明書・今年度の研究資料）をご確認ください', 'error');
         return;
       }
 
@@ -477,7 +507,8 @@
         formType: FORM_TYPE,
         lineUserId: lineProfile.userId,
         lineDisplayName: lineProfile.displayName,
-        docOpenedAt: docOpenedAt
+        doc1OpenedAt: docsOpenedAt[1],
+        doc2OpenedAt: docsOpenedAt[2]
       };
 
       if (currentConfig.requiresParent) {
@@ -513,15 +544,11 @@
         body: JSON.stringify(data)
       })
       .then(function() {
-        document.getElementById('consentForm').style.display = 'none';
-        document.getElementById('docSection').style.display = 'none';
-        document.getElementById('lineStatus').style.display = 'none';
-        document.getElementById('status').style.display = 'none';
-        document.body.innerHTML += [
+        document.body.innerHTML = [
           '<div class="done-msg">',
           '  <h2>送信完了しました</h2>',
           '  <p style="margin-top:12px;color:#4a5568">数秒後にLINEのトークに同意書のPDF控えが届きます。</p>',
-          '  <p style="margin-top:20px"><button onclick="liff.closeWindow()" class="btn-primary" style="max-width:200px">閉じる</button></p>',
+          '  <p style="margin-top:20px"><button onclick="liff.closeWindow()" class="btn-primary" style="max-width:200px;background:#06c755;color:white;border:none;padding:14px;border-radius:6px;font-size:16px;font-weight:600;cursor:pointer">閉じる</button></p>',
           '</div>'
         ].join('');
       })
